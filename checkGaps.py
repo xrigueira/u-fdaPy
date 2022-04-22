@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from datetime import datetime
 
-def checkJumps(File):
+def checkGaps(File):
 
     # Read the file
     fileName, fileExtension = os.path.splitext(File)

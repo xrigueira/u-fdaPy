@@ -1,6 +1,6 @@
 
-from checkJumps import checkJumps
+from checkGaps import checkGaps
 
 if __name__ == '__main__':
     
-    checkJumps('Amonio.txt')
+    checkGaps('Amonio.txt') 

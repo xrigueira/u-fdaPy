@@ -1,9 +1,10 @@
-from cProfile import label
-from email import header
+
 import os
 import numpy as np
 import pandas as pd
 from datetime import datetime
+
+"""The function checkGaps() look for gaps in the times series and fills them with the missing dates"""
 
 def checkGaps(File):
 

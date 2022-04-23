@@ -1,6 +1,12 @@
 
 from checkGaps import checkGaps
+from normalizer import normalizer
 
 if __name__ == '__main__':
     
-    checkGaps('Amonio.txt') 
+    # Fill in the gaps in the time series
+    checkGaps('Amonio.txt')
+    
+    # Normalize the data. See normalizer.py for details.
+    normalizer('Amonion_full.txt')
+    

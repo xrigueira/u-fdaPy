@@ -8,5 +8,5 @@ if __name__ == '__main__':
     checkGaps('Amonio.txt')
     
     # Normalize the data. See normalizer.py for details.
-    normalizer('Amonion_full.txt')
+    normalizer('Amonio_full.txt')
     

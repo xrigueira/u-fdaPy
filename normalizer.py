@@ -250,6 +250,6 @@ def normalizer(File):
 
     # Save the new new file and remove the temp file
     cols = list(df.columns.values.tolist())
-    df.to_csv(f'Database/{fileName[0:-5]}_pro.csv', sep=';', encoding='utf-8', index=False, header=cols)
+    df.to_csv(f'Database/{fileName[0:-5]}_nor.csv', sep=';', encoding='utf-8', index=False, header=cols)
     os.remove(f'Database/{fileName}_temp.csv')
 

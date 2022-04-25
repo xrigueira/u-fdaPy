@@ -76,8 +76,6 @@ def filterer(File, span):
         for i in weeks:
             
             df = df.loc[df['week'] == i]
-            
-            print(len(df))
 
             numNaN = df['value'].isnull().sum()
             

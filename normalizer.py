@@ -174,7 +174,7 @@ def normalizer(File):
                 
                 print('UPDATED indexes of the months with 28 days: ', febs)
 
-    # The rest of the code has to be computed for all time frames
+    # The rest of the code has to be computed for all time frames but months I think
     
     # Store the index of the first Monday
     mondayIndex = findMonday(df)

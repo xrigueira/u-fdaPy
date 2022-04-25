@@ -68,7 +68,7 @@ def normalizer(File):
                     if minInit > 45:
 
                         minInit = 0
-                        hourInit = hourInit + 1
+                        hourInit += 1
                     
                     rows.append([f'{yearInit}-{monthInit}-{dayInit} {hourInit}:{minInit}:00', np.nan, yearInit, monthInit, dayInit, hourInit, minInit, secInit])
 
@@ -109,12 +109,12 @@ def normalizer(File):
                         
                         minInit = 0
                         hourInit = 0
-                        dayInit = dayInit + 1
+                        dayInit += 1
 
                     if minInit > 45:
 
                         minInit = 0
-                        hourInit = hourInit + 1
+                        hourInit += 1
                     
                     rows.append([f'{yearInit}-{monthInit}-{dayInit} {hourInit}:{minInit}:00', np.nan, yearInit, monthInit, dayInit, hourInit, minInit, secInit])
                 
@@ -151,12 +151,12 @@ def normalizer(File):
                         
                         minInit = 0
                         hourInit = 0
-                        dayInit = dayInit + 1
+                        dayInit += 1
                         
                     if minInit > 45:
 
                         minInit = 0
-                        hourInit = hourInit + 1
+                        hourInit += 1
                     
                     rows.append([f'{yearInit}-{monthInit}-{dayInit} {hourInit}:{minInit}:00', np.nan, yearInit, monthInit, dayInit, hourInit, minInit, secInit])
                     

@@ -9,6 +9,8 @@ and normalizer() gets the filled database and adds the remaing days to set every
 This is done due to requierments of the functional data. In order to covert discrete data into functional
 all time frames must have the same number of dicrete values."""
 
+# TODO habría que adaptar normalizer() para que ejecute los while loops. See lines 47, and 177
+
 # Function to get the index of the firts Monday
 def findMonday(Dataframe):
     
@@ -41,6 +43,8 @@ def normalizer(File):
     df['hour'] = hour
     df['minute'] = minute
     df['second'] = second
+
+    # if timeFrame == 'a'
 
     # Save temp file
     df.index.name = 'date'
@@ -170,6 +174,8 @@ def normalizer(File):
                 
                 print('UPDATED indexes of the months with 28 days: ', febs)
 
+    # The rest of the code has to be computed for all time frames
+    
     # Store the index of the first Monday
     mondayIndex = findMonday(df)
 

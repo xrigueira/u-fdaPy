@@ -4,7 +4,7 @@ from normalizer import normalizer
 from filterer import filterer
 
 # Define the data we want to study
-variable = 'Amonio' # this remains unused for now
+variableFile = 'Amonio' # this remains unused for now
 
 if __name__ == '__main__':
     

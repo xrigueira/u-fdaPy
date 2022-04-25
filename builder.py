@@ -1,4 +1,5 @@
 
+from distutils.command.build import build
 import os
 import pandas as pd
 
@@ -12,7 +13,7 @@ Returns:
 
 File = 'Amonio_pro.csv'
 fileName, fileExtension = os.path.splitext(File)
-df = pd.read_csv(f'Database/{fileName}.csv', delimiter=';') # Set column date as the index
+df = pd.read_csv(f'Database/{fileName}.csv', delimiter=';') # Set column date as the index?
 cols = list(df.columns.values.tolist())
 
 timeFrame = 'a'
@@ -50,9 +51,9 @@ if timeFrame == 'a':
     dataMatrix = []
     timeStamps =  []
 
-    if span == 'a':
+    if span == 'a': # All months available in the database
 
-        # Put the desired data in dataMatrix 
+        # Put the desired data in dataMatrix  and timeStamps
         for i in years:
 
             df = df.loc[df['year'] == i]
@@ -63,7 +64,52 @@ if timeFrame == 'a':
 
                 if df.empty == True:
                     pass
+                elif df.empty == False:
+                    variable = df['value'].values.tolist()
 
+                    if len(variable) == 2976:
+                        dataMatrix.append(variable)
+                        timeStamps.append(f'{j} {i}')
+                    else:
+                        pass
+
+                df = pd.read_csv(f'Database/{fileName}.csv', delimiter=';')
+
+                if j == 12:
+                    df = df.loc[df['year'] == (i+1)]
+                else:
+                    df = df.loc[df['year'] == i]
+
+    if span == 'b': # All months in one or several given years
+
+        # Put the desired data in dataMatrix and timeStamps
+        for i in numberYears:
+
+            df = df.loc[df['year'] == i]
+
+            for j in months:
+
+                df = df.loc[df['month'] == j]
+
+                if df.empty == True:
+                    pass
+                elif df.empty == False:
+                    variable = df['value'].values.tolist()
+
+                    if len(variable) == 2976:
+                        dataMatrix.append(variable)
+                        timeStamps.append(f'{j} {i}')
+                    else:
+                        pass
+
+                df = pd.read_csv(f'Database/{fileName}.csv', delimiter=';')
+
+                if j == 12:
+                    df = df.loc[df['year'] == (i+1)]
+                else:
+                    df = df.loc[df['year'] == i]
+        
+    # TODO: continue with option c
 
 elif timeFrame == 'c':
 
@@ -80,3 +126,6 @@ elif timeFrame == 'c':
     elif span == 'd':
         yearBegin, monthBegin, dayBegin = input('Enter the first year desired: '), input('Enter the first month desired: '), input('Enter the first day desired: ')
         yearEnd, monthEnd, dayEnd = input('Enter the last year desired: '), input('Enter the last month desired: '), input('Enter the last day desired: ')
+
+
+print(dataMatrix)

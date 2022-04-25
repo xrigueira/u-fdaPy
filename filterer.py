@@ -38,6 +38,7 @@ def filterer(File, span):
                 numNaN = df['value'].isnull().sum()
                 
                 # Get the first and last index of those months with too many empty values (NaN in this case)
+                # TODO include the filter for consecutive blanks here. Maybe and "and" logical statement. Look up online
                 if numNaN >= 480:
                     indexInit.append(df.index[0])
                     indexEnd.append(df.index[-1])
@@ -81,6 +82,7 @@ def filterer(File, span):
             numNaN = df['value'].isnull().sum()
             
             # Get the first and last index of those weeks with too many empty values (NaN in this case)
+            # TODO include the filter for consecutive blanks here. Maybe and "and" logical statement. Look up online
             if numNaN >= 194:
                 indexInit.append(df.index[0])
                 indexEnd.append(df.index[-1])
@@ -122,6 +124,7 @@ def filterer(File, span):
                     numNaN = df['value'].isnull().sum()
 
                     # Get the first and last index of those days with too many empty values (NaN in this case)
+                    # TODO include the filter for consecutive blanks here. Maybe and "and" logical statement. Look up online
                     if numNaN >= 26:
                         indexInit.append(df.index[0])
                         indexEnd.append(df.index[-1])

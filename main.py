@@ -16,4 +16,3 @@ if __name__ == '__main__':
     
     # Filter out those months with too many NaN and iterate on the rest
     filterer(File='Amonio_nor.csv', span='a')
-    

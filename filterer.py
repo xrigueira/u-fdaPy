@@ -87,7 +87,7 @@ def filterer(File, span):
 
             df = pd.read_csv(f'Database/{fileName}.csv', delimiter=';')
             
-        # Delete those parts of the data frma between the appended indices
+        # Delete those parts of the data frame between the appended indices
         df = pd.read_csv(f'Database/{fileName}.csv', delimiter=';')
         
         counter = 0
@@ -118,7 +118,7 @@ def filterer(File, span):
                 for k in days:
 
                     df = df.loc[df['day'] == k]
-
+                    
                     numNaN = df['value'].isnull().sum()
 
                     # Get the first and last index of those days with too many empty values (NaN in this case)
@@ -129,7 +129,11 @@ def filterer(File, span):
 
                     df = pd.read_csv(f'Database/{fileName}.csv', delimiter=';')
 
-                    if j < 12:
+                    if j == 12 and k == 31:
+                        df = df.loc[df['year'] == (i+1)]
+                        df = df.loc[df['month'] == 1]
+                    
+                    elif j <= 12:
                         df = df.loc[df['year'] == i]
                         
                         if k < 31:
@@ -137,15 +141,6 @@ def filterer(File, span):
                         
                         elif k == 31:
                             df = df.loc[df['month'] == (j+1)]
-                        
-                        else:
-                            break
-                    
-                    elif j == 12:
-                        df = df.loc[df['year'] == (i+1)]
-
-                    else:
-                        break
 
         # Delete those parts of the data frame between the appended indices
         df = pd.read_csv(f'Database/{fileName}.csv', delimiter=';')
@@ -154,7 +149,7 @@ def filterer(File, span):
         lenDay = 96
         for i,j in zip(indexInit, indexEnd):
 
-            df = pd.read_csv(df.index[int(i-counter*lenDay):int(j-counter*lenDay+1)], inplace=False)
+            df = df.drop(df.index[int(i-counter*lenDay):int(j-counter*lenDay+1)], inplace=False)
             counter += 1
 
         # Interpolate the remaining empty values
@@ -163,4 +158,3 @@ def filterer(File, span):
         # Save the data frame
         cols = list(df.columns.values.tolist())
         df.to_csv(f'Database/{fileName[0:-4]}_pro.csv', sep=';', encoding='utf-8', index=False, header=cols)
-

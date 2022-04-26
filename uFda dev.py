@@ -803,8 +803,7 @@ elif timeFrame == 'c':
             
             if i[0:4] == yearBegin and int(i[5:7]) == int(monthBegin):
                 daysAvailableS.append(int(i[-2:]))
-            
-        
+
         closestDayS = min(daysAvailableS, key=lambda x:abs(x-int(dayBegin)))
         closestStartDate = f'{int(yearBegin)} {int(monthBegin)} {closestDayS}'
         print(closestStartDate)

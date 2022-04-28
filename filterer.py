@@ -5,7 +5,7 @@ import pandas as pd
 """This function deletes those time spans with too many empty values,
 and iterates on the rest"""
 
-def filterer(File, span):
+def filterer(File, timeframe):
         
     fileName, fileExtension = os.path.splitext(File)
     df = pd.read_csv(f'Database/{fileName}.csv', delimiter=';')
@@ -24,7 +24,7 @@ def filterer(File, span):
     days = list(dict.fromkeys(df['day'].tolist()))
 
 
-    if span == 'a':
+    if timeframe == 'a':
         
         indexInit, indexEnd = [], []
         for i in years:
@@ -34,12 +34,13 @@ def filterer(File, span):
             for j in months:
                 
                 df = df.loc[df['month'] == j]
-            
+
+                # Get total number of NaN and the max consecutive NaNs
                 numNaN = df['value'].isnull().sum()
+                consecNaN = max(df['value'].isnull().astype(int).groupby(df['value'].notnull().astype(int).cumsum()).sum())
                 
-                # Get the first and last index of those months with too many empty values (NaN in this case)
-                # TODO include the filter for consecutive blanks here. Maybe and "and" logical statement. Look up online
-                if numNaN >= 480:
+                # Get the first and last index of those months with too many empty (or consecutive) values (NaN in this case)
+                if numNaN >= 480 or consecNaN >= 192:
                     indexInit.append(df.index[0])
                     indexEnd.append(df.index[-1])
 
@@ -68,7 +69,7 @@ def filterer(File, span):
         cols = list(df.columns.values.tolist())
         df.to_csv(f'Database/{fileName[0:-4]}_pro.csv', sep=';', encoding='utf-8', index=False, header=cols)
 
-    elif span == 'b':
+    elif timeframe == 'b':
         
         weeks = [i for i in weeks if i != 0] # Remove the 0
 
@@ -77,11 +78,11 @@ def filterer(File, span):
             
             df = df.loc[df['week'] == i]
 
+            # Get total number of NaN and the max consecutive NaNs
             numNaN = df['value'].isnull().sum()
-            
-            # Get the first and last index of those weeks with too many empty values (NaN in this case)
-            # TODO include the filter for consecutive blanks here. Maybe and "and" logical statement. Look up online
-            if numNaN >= 194:
+            consecNaN = max(df['value'].isnull().astype(int).groupby(df['value'].notnull().astype(int).cumsum()).sum())
+            # Get the first and last index of those weeks with too many empty (or consecutive) values (NaN in this case)
+            if numNaN >= 192 or consecNaN >= 24:
                 indexInit.append(df.index[0])
                 indexEnd.append(df.index[-1])
 
@@ -104,7 +105,7 @@ def filterer(File, span):
         cols = list(df.columns.values.tolist())
         df.to_csv(f'Database/{fileName[0:-4]}_pro.csv', sep=';', encoding='utf-8', index=False, header=cols)
         
-    elif span == 'c':
+    elif timeframe == 'c':
 
         indexInit, indexEnd = [], []
         for i in years:
@@ -118,12 +119,12 @@ def filterer(File, span):
                 for k in days:
 
                     df = df.loc[df['day'] == k]
-                    
-                    numNaN = df['value'].isnull().sum()
 
-                    # Get the first and last index of those days with too many empty values (NaN in this case)
-                    # TODO include the filter for consecutive blanks here. Maybe and "and" logical statement. Look up online
-                    if numNaN >= 26:
+                    # Get total number of NaN and the max consecutive NaNs
+                    numNaN = df['value'].isnull().sum()
+                    consecNaN = max(df['value'].isnull().astype(int).groupby(df['value'].notnull().astype(int).cumsum()).sum())
+                    # Get the first and last index of those days with too many empty (or consecutive) values (NaN in this case)
+                    if numNaN >= 20 or consecNaN >= 8:
                         indexInit.append(df.index[0])
                         indexEnd.append(df.index[-1])
 

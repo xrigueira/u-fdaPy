@@ -3,7 +3,6 @@ import skfda as fda
 import pandas as pd
 import plotly.graph_objects as go
 
-from varname import nameof
 from matplotlib import pyplot as plt
 from scipy.stats.stats import pearsonr
 
@@ -43,7 +42,7 @@ def smoothing(datamatrix, gridpoints, functionaldata):
     # Calculate Fourier smoothing and the number of basis functions
     dataMatrixFlat = flatter(datamatrix)
     
-    for nBasis in range(200):
+    for nBasis in range(300):
         
         basis = fda.representation.basis.Fourier(n_basis=nBasis) # fitting the data through Fourier
         smoothedData = functionaldata.to_basis(basis) # Change class to FDataBasis
@@ -76,7 +75,7 @@ def smoothing(datamatrix, gridpoints, functionaldata):
     
     return smoothedData, smoothedDataGrid
 
-def boxplot(varname, timestamps, depth, cutoff, smootheddata, smootheddatagrid):
+def boxplot(varname, depthname, timestamps, depth, cutoff, smootheddata, smootheddatagrid):
     
     # Plot the outliers (Boxplot)
     boxplot = fda.exploratory.visualization.Boxplot(smootheddatagrid, depth_method=depth, factor=cutoff)
@@ -87,7 +86,7 @@ def boxplot(varname, timestamps, depth, cutoff, smootheddata, smootheddatagrid):
     
     # Simplified representation
     color, outliercolor = 0.3, 0.7
-    depthName = nameof(depth[0:-5])
+    depthName = depthname
 
     fig, axes = plt.subplots()
     
@@ -135,10 +134,10 @@ def boxplot(varname, timestamps, depth, cutoff, smootheddata, smootheddatagrid):
         
     return outliers
 
-def msplot(varname, timestamps, depth, cutoff, smootheddata, smootheddatagrid):
+def msplot(varname, depthname, timestamps, depth, cutoff, smootheddata, smootheddatagrid):
     
     color, outliercolor = 0.3, 0.7
-    depthName = nameof(depth[0:-5])
+    depthName = depthname
     
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
     
@@ -193,7 +192,7 @@ def msplot(varname, timestamps, depth, cutoff, smootheddata, smootheddatagrid):
         
         # Implementacion elipse
         b = np.percentile(shape, 85)
-        a = np.percentile(mag, 80) - np.percentile(mag, 20)
+        a = np.percentile(mag, 90) - np.percentile(mag, 10)
         elip = np.where(1 < (((pow((mag), 2) // pow(a, 2)) + (pow((shape), 2) // pow(b, 2)))))
         # ellipse = Ellipse((0, 0), (a), (b), angle=0, alpha=0.3)
         
@@ -272,12 +271,12 @@ def msplot(varname, timestamps, depth, cutoff, smootheddata, smootheddatagrid):
     
     return outliers, outliersBoosted
 
-def functionalAnalysis(varname, datamatrix, timestamps, timeframe, depth, cutoff):
+def functionalAnalysis(varname, depthname, datamatrix, timestamps, timeframe, depth, cutoff):
     
     gridPoints, functionalData = dataGrid(datamatrix, timeframe)
     
     smoothedData, smoothedDataGrid = smoothing(datamatrix, gridpoints=gridPoints, functionaldata=functionalData)
     
-    outliers, outliersBoosted = msplot(varname, timestamps, depth, cutoff, smootheddata=smoothedData, smootheddatagrid=smoothedDataGrid)
+    outliers, outliersBoosted = msplot(varname, depthname, timestamps, depth, cutoff, smootheddata=smoothedData, smootheddatagrid=smoothedDataGrid)
     
-    # plt.show()
+    plt.show()

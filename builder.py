@@ -443,7 +443,7 @@ def builder(File, timeFrame):
 
     elif timeFrame == 'c':
         
-        span = input('All days (a), all days of one or several years (b) all days of one or several months (c), one or a range of days in every month of every year (d), one or a range of days in several years (e), one or a range of days in several months in several years (f), and a range of days (g)')
+        span = input('All days (a), all days of one or several years (b) all days of one or several months (c), one or a range of days in every month of every year (d), one or a range of days in several years (e), one or a range of days in several months in several years (f), and a range of days (g): ')
         
         if span == 'b':
             numberYears = list(map(int, input('Enter the years (space-separated): ').split()))

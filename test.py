@@ -1,13 +1,11 @@
-from numpy import empty
-import skfda as fda
-from varname import nameof
+import numpy as np
+import pandas as pd
 
-integratedDepth = fda.exploratory.depth.IntegratedDepth().multivariate_depth
-modifiedbandDepth = fda.exploratory.depth.ModifiedBandDepth().multivariate_depth
-projectionDepth = fda.exploratory.depth.multivariate.ProjectionDepth()
-simplicialDepth = fda.exploratory.depth.multivariate.SimplicialDepth()
+df = pd.DataFrame({'a':[1,2,np.NaN, np.NaN, np.NaN, 6,7,8,9,10,np.NaN,np.NaN,13,14]})
 
-integratedDepth
+consecutive = max(df['a'].isnull().astype(int).groupby(df.a.notnull().astype(int).cumsum()).sum())
 
-print(nameof(integratedDepth)[0:-5])
+print(type(consecutive))
+
+
 

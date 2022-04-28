@@ -9,9 +9,10 @@ from uFda import functionalAnalysis
 
 # Define the data we want to study
 varName = 'Amonio' # this remains unused for now
+timeFrame = 'a'
 
 # Set the preprocessing option
-preprocessing = 'Y'
+preprocessing = 'n'
 
 if __name__ == '__main__':
     
@@ -26,23 +27,26 @@ if __name__ == '__main__':
         print('[INFO] normalizer() DONE')
         
         # Filter out those months with too many NaN and iterate on the rest
-        filterer(File='Amonio_nor.csv', span='a')
+        filterer(File='Amonio_nor.csv', timeframe=timeFrame)
         print('[INFO] filterer() DONE')
     
     else:
         
         # Read the database with the desired time unit and create dataMatrix and timeStamps
-        dataMatrix, timeStamps = builder(File='Amonio_pro.csv', timeFrame='a')
+        dataMatrix, timeStamps = builder(File='Amonio_pro.csv', timeFrame=timeFrame)
         print('[INFO] builder() DONE')
-        
-        # Initialize needed variables
-        cutoffIntBox, cutoffMDBBox, cutoffIntMS, cutoffMDBMS = 1, 1, 0.993, 0.993 # Cutoff params
 
-        # Define depths here
-        integratedDepth = fda.exploratory.depth.IntegratedDepth().multivariate_depth
-        modifiedbandDepth = fda.exploratory.depth.ModifiedBandDepth().multivariate_depth
-        projectionDepth = fda.exploratory.depth.multivariate.ProjectionDepth()
-        simplicialDepth = fda.exploratory.depth.multivariate.SimplicialDepth()
+        print(dataMatrix[-3])
+        print(dataMatrix[-2])
+        print(dataMatrix[-1])
         
-        functionalAnalysis(varname=varName, datamatrix=dataMatrix, timestamps=timeStamps, timeframe='a', depth=modifiedbandDepth, cutoff=cutoffIntMS)
-        print('[INFO] functionalAnalysis() DONE')
+        # cutoffIntBox, cutoffMDBBox, cutoffIntMS, cutoffMDBMS = 1, 1, 0.993, 0.993 # Cutoff params
+
+        # # Define depths here
+        # integratedDepth = fda.exploratory.depth.IntegratedDepth().multivariate_depth
+        # modifiedbandDepth = fda.exploratory.depth.ModifiedBandDepth().multivariate_depth
+        # projectionDepth = fda.exploratory.depth.multivariate.ProjectionDepth()
+        # simplicialDepth = fda.exploratory.depth.multivariate.SimplicialDepth()
+        
+        # functionalAnalysis(varname=varName, depthname='modified band', datamatrix=dataMatrix, timestamps=timeStamps, timeframe=timeFrame, depth=modifiedbandDepth, cutoff=cutoffIntMS)
+        # print('[INFO] functionalAnalysis() DONE')

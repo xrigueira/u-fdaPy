@@ -139,7 +139,7 @@ def msplot(varname, depthname, timestamps, depth, cutoff, smootheddata, smoothed
     color, outliercolor = 0.3, 0.7
     depthName = depthname
     
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 4))
     
     funcMSPlot = fda.exploratory.visualization.MagnitudeShapePlot(fdata=smootheddatagrid, multivariate_depth=depth, cutoff_factor=cutoff, axes=ax1)
 
@@ -204,7 +204,7 @@ def msplot(varname, depthname, timestamps, depth, cutoff, smootheddata, smoothed
         labels[:] = 0
         labels[elip] = 1
         
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 4))
         # ax1 = fig.add_subplot(1, 1, 1)
 
         ax1.scatter(funcMSPlot.points[:, 0], funcMSPlot.points[:, 1], c=funcMSPlot.colormap(colors))
@@ -213,9 +213,9 @@ def msplot(varname, depthname, timestamps, depth, cutoff, smootheddata, smoothed
         ax1.set_ylabel("Shape outlyingness")
         # ax1.add_artist(ellipse)
         
-        ax2.set_title(f'Outliers {depthName} depth ' + r'$NO2$')
-        ax2.set_xlabel('Days')
-        ax2.set_ylabel(r'$NO2$' + r' $(\mu*g/m^3)$')
+        ax2.set_title(f'Outliers {depthName} depth ' + r'$NH_4$')
+        ax2.set_xlabel('data points')
+        ax2.set_ylabel(r'$NH_4$' + r' $(mg/l)$')
         
         colormap = plt.cm.get_cmap('seismic')
         smootheddata.plot(group=labels, group_colors=colormap([color, outliercolor]), group_names=['nonoutliers', 'outliers'], axes=ax2)

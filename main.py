@@ -9,7 +9,7 @@ from uFda import functionalAnalysis
 
 # Define the data we want to study
 varName = 'Amonio' # this remains unused for now
-timeFrame = 'a'
+timeFrame = 'b'
 
 # Set the preprocessing option
 preprocessing = 'n'
@@ -36,17 +36,13 @@ if __name__ == '__main__':
         dataMatrix, timeStamps = builder(File='Amonio_pro.csv', timeFrame=timeFrame)
         print('[INFO] builder() DONE')
 
-        print(dataMatrix[-3])
-        print(dataMatrix[-2])
-        print(dataMatrix[-1])
-        
-        # cutoffIntBox, cutoffMDBBox, cutoffIntMS, cutoffMDBMS = 1, 1, 0.993, 0.993 # Cutoff params
+        cutoffIntBox, cutoffMDBBox, cutoffIntMS, cutoffMDBMS = 1, 1, 0.993, 0.993 # Cutoff params
 
-        # # Define depths here
-        # integratedDepth = fda.exploratory.depth.IntegratedDepth().multivariate_depth
-        # modifiedbandDepth = fda.exploratory.depth.ModifiedBandDepth().multivariate_depth
-        # projectionDepth = fda.exploratory.depth.multivariate.ProjectionDepth()
-        # simplicialDepth = fda.exploratory.depth.multivariate.SimplicialDepth()
+        # Define depths here
+        integratedDepth = fda.exploratory.depth.IntegratedDepth().multivariate_depth
+        modifiedbandDepth = fda.exploratory.depth.ModifiedBandDepth().multivariate_depth
+        projectionDepth = fda.exploratory.depth.multivariate.ProjectionDepth()
+        simplicialDepth = fda.exploratory.depth.multivariate.SimplicialDepth()
         
-        # functionalAnalysis(varname=varName, depthname='modified band', datamatrix=dataMatrix, timestamps=timeStamps, timeframe=timeFrame, depth=modifiedbandDepth, cutoff=cutoffIntMS)
-        # print('[INFO] functionalAnalysis() DONE')
+        functionalAnalysis(varname=varName, depthname='modified band', datamatrix=dataMatrix, timestamps=timeStamps, timeframe=timeFrame, depth=modifiedbandDepth, cutoff=cutoffIntMS)
+        print('[INFO] functionalAnalysis() DONE')

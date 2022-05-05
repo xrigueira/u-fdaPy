@@ -5,11 +5,12 @@ from checkGaps import checkGaps
 from normalizer import normalizer
 from filterer import filterer
 from builder import builder
-from uFda import functionalAnalysis
+# from uFda import functionalAnalysis
 from controlCharts import controlCharts
+from uFda_kMeans import functionalAnalysis
 
 # Define the data we want to study
-varName = 'Amonio' # this remains unused for now
+varName = 'Turbidez' # this remains unused for now
 timeFrame = 'b'
 
 # Set the preprocessing option
@@ -20,21 +21,21 @@ if __name__ == '__main__':
     if preprocessing == 'Y':
         
         # Fill in the gaps in the time series
-        checkGaps(File='Amonio.txt')
+        checkGaps(File=f'{varName}.txt')
         print('[INFO] checkGaps() DONE')
         
         # Normalize the data. See normalizer.py for details
-        normalizer(File='Amonio_full.csv')
+        normalizer(File=f'{varName}_full.csv')
         print('[INFO] normalizer() DONE')
         
         # Filter out those months with too many NaN and iterate on the rest
-        filterer(File='Amonio_nor.csv', timeframe=timeFrame)
+        filterer(File=f'{varName}_nor.csv', timeframe=timeFrame)
         print('[INFO] filterer() DONE')
     
     else:
         
         # Read the database with the desired time unit and create dataMatrix and timeStamps
-        dataMatrix, timeStamps = builder(File='Amonio_pro.csv', timeFrame=timeFrame)
+        dataMatrix, timeStamps = builder(File=f'{varName}_pro.csv', timeFrame=timeFrame)
         print('[INFO] builder() DONE')
 
         cutoffIntBox, cutoffMDBBox, cutoffIntMS, cutoffMDBMS = 1, 1, 0.993, 0.993 # Cutoff params
@@ -47,6 +48,8 @@ if __name__ == '__main__':
         
         outliers, outliersBoosted, outliersCC, outliersCCBoosted = functionalAnalysis(varname=varName, depthname='modified band', datamatrix=dataMatrix, timestamps=timeStamps, timeframe=timeFrame, depth=modifiedbandDepth, cutoff=cutoffIntMS)
         print('[INFO] functionalAnalysis() DONE')
+
+
         
-        controlCharts(datamatrix=dataMatrix, timestamps=timeStamps, timeframe=timeFrame, vargraph='mean', outleirsresults=outliersCCBoosted)
-        print('[INFO] controlCharts() DONE')
+        # controlCharts(datamatrix=dataMatrix, timestamps=timeStamps, timeframe=timeFrame, vargraph='mean', outleirsresults=outliersCCBoosted)
+        # print('[INFO] controlCharts() DONE')

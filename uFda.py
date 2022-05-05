@@ -145,6 +145,9 @@ def msplot(varname, depthname, timestamps, depth, cutoff, smootheddata, smoothed
 
     outliersMSPlot = funcMSPlot.outliers
     
+    # Copy of the outliers for the control charts
+    outliersCC = list(np.copy(outliersMSPlot).astype(int))
+    
     funcMSPlot.plot()
     smootheddata.plot(group=funcMSPlot.outliers.astype(int), group_colors=funcMSPlot.colormap([color, outliercolor]), group_names=['nonoutliers', 'outliers'], axes=ax2)
     
@@ -203,6 +206,9 @@ def msplot(varname, depthname, timestamps, depth, cutoff, smootheddata, smoothed
         labels = np.copy(funcMSPlot.outliers.astype(int))
         labels[:] = 0
         labels[elip] = 1
+        
+        # Copy of the labels list for the control charts
+        outliersCCBoosted = list(labels.copy())
         
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 4))
         # ax1 = fig.add_subplot(1, 1, 1)
@@ -269,7 +275,7 @@ def msplot(varname, depthname, timestamps, depth, cutoff, smootheddata, smoothed
     print(dfOutliers)
     print('Average magnitude: {} | Average shape: {}'.format(np.average(mag), np.average(shape)))
     
-    return outliers, outliersBoosted
+    return outliers, outliersBoosted, outliersCC, outliersCCBoosted
 
 def functionalAnalysis(varname, depthname, datamatrix, timestamps, timeframe, depth, cutoff):
     
@@ -277,6 +283,8 @@ def functionalAnalysis(varname, depthname, datamatrix, timestamps, timeframe, de
     
     smoothedData, smoothedDataGrid = smoothing(datamatrix, gridpoints=gridPoints, functionaldata=functionalData)
     
-    outliers, outliersBoosted = msplot(varname, depthname, timestamps, depth, cutoff, smootheddata=smoothedData, smootheddatagrid=smoothedDataGrid)
+    outliers, outliersBoosted, outliersCC, outliersCCBoosted = msplot(varname, depthname, timestamps, depth, cutoff, smootheddata=smoothedData, smootheddatagrid=smoothedDataGrid)
     
     plt.show()
+    
+    return outliers, outliersBoosted, outliersCC, outliersCCBoosted

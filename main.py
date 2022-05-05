@@ -6,6 +6,7 @@ from normalizer import normalizer
 from filterer import filterer
 from builder import builder
 from uFda import functionalAnalysis
+from controlCharts import controlCharts
 
 # Define the data we want to study
 varName = 'Amonio' # this remains unused for now
@@ -44,5 +45,8 @@ if __name__ == '__main__':
         projectionDepth = fda.exploratory.depth.multivariate.ProjectionDepth()
         simplicialDepth = fda.exploratory.depth.multivariate.SimplicialDepth()
         
-        functionalAnalysis(varname=varName, depthname='modified band', datamatrix=dataMatrix, timestamps=timeStamps, timeframe=timeFrame, depth=modifiedbandDepth, cutoff=cutoffIntMS)
+        outliers, outliersBoosted, outliersCC, outliersCCBoosted = functionalAnalysis(varname=varName, depthname='modified band', datamatrix=dataMatrix, timestamps=timeStamps, timeframe=timeFrame, depth=modifiedbandDepth, cutoff=cutoffIntMS)
         print('[INFO] functionalAnalysis() DONE')
+        
+        controlCharts(datamatrix=dataMatrix, timestamps=timeStamps, timeframe=timeFrame, vargraph='mean', outleirsresults=outliersCC)
+        print('[INFO] controlCharts() DONE')

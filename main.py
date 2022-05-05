@@ -48,5 +48,5 @@ if __name__ == '__main__':
         outliers, outliersBoosted, outliersCC, outliersCCBoosted = functionalAnalysis(varname=varName, depthname='modified band', datamatrix=dataMatrix, timestamps=timeStamps, timeframe=timeFrame, depth=modifiedbandDepth, cutoff=cutoffIntMS)
         print('[INFO] functionalAnalysis() DONE')
         
-        controlCharts(datamatrix=dataMatrix, timestamps=timeStamps, timeframe=timeFrame, vargraph='mean', outleirsresults=outliersCC)
+        controlCharts(datamatrix=dataMatrix, timestamps=timeStamps, timeframe=timeFrame, vargraph='mean', outleirsresults=outliersCCBoosted)
         print('[INFO] controlCharts() DONE')

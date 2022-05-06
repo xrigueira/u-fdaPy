@@ -6,19 +6,19 @@ from normalizer import normalizer
 from filterer import filterer
 from builder import builder
 # from uFda import functionalAnalysis
+from uFda_algos import functionalAnalysis
 from controlCharts import controlCharts
-from uFda_kMeans import functionalAnalysis
 
 # Define the data we want to study
-varName = 'Turbidez' # this remains unused for now
+varName = 'Amonio' # this remains unused for now
 timeFrame = 'b'
 
 # Set the preprocessing option
-preprocessing = 'n'
+preprocessing = 'Y'
 
 if __name__ == '__main__':
     
-    if preprocessing == 'Y':
+    if preprocessing == 'n':
         
         # Fill in the gaps in the time series
         checkGaps(File=f'{varName}.txt')

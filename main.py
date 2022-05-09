@@ -10,15 +10,15 @@ from uFda_algos import functionalAnalysis
 from controlCharts import controlCharts
 
 # Define the data we want to study
-varName = 'Amonio' # this remains unused for now
-timeFrame = 'b'
+varName = 'Oxigeno disuelto'
+timeFrame = 'c'
 
 # Set the preprocessing option
-preprocessing = 'Y'
+preprocessing = 'n'
 
 if __name__ == '__main__':
     
-    if preprocessing == 'n':
+    if preprocessing == 'Y':
         
         # Fill in the gaps in the time series
         checkGaps(File=f'{varName}.txt')
@@ -49,7 +49,5 @@ if __name__ == '__main__':
         outliers, outliersBoosted, outliersCC, outliersCCBoosted = functionalAnalysis(varname=varName, depthname='modified band', datamatrix=dataMatrix, timestamps=timeStamps, timeframe=timeFrame, depth=modifiedbandDepth, cutoff=cutoffIntMS)
         print('[INFO] functionalAnalysis() DONE')
 
-
-        
-        # controlCharts(datamatrix=dataMatrix, timestamps=timeStamps, timeframe=timeFrame, vargraph='mean', outleirsresults=outliersCCBoosted)
-        # print('[INFO] controlCharts() DONE')
+        controlCharts(datamatrix=dataMatrix, timestamps=timeStamps, timeframe=timeFrame, vargraph='mean', outleirsresults=outliersCCBoosted)
+        print('[INFO] controlCharts() DONE')

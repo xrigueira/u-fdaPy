@@ -195,7 +195,7 @@ def msplot(varname, depthname, timestamps, depth, cutoff, smootheddata, smoothed
         
         # Implementacion elipse
         b = np.percentile(shape, 85)
-        a = np.percentile(mag, 90) - np.percentile(mag, 10)
+        a = np.percentile(mag, 80) - np.percentile(mag, 20)
         elip = np.where(1 < (((pow((mag), 2) // pow(a, 2)) + (pow((shape), 2) // pow(b, 2)))))
         # ellipse = Ellipse((0, 0), (a), (b), angle=0, alpha=0.3)
         

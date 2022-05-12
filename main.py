@@ -10,8 +10,8 @@ from uFda_algos import functionalAnalysis
 from controlCharts import controlCharts
 
 # Define the data we want to study
-varName = 'Oxigeno disuelto'
-timeFrame = 'c'
+varName = 'Conductividad'
+timeFrame = 'b'
 
 # Set the preprocessing option
 preprocessing = 'n'

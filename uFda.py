@@ -1,10 +1,13 @@
+from cv2 import kmeans
 import numpy as np
 import skfda as fda
 import pandas as pd
 import plotly.graph_objects as go
 
 from matplotlib import pyplot as plt
-from scipy.stats.stats import pearsonr
+from scipy.stats import pearsonr
+from sympy import zeros
+from pearson import pearson_correlation
 
 """This file implemented the functional data analysis of the pre-processed data"""
 
@@ -41,25 +44,28 @@ def smoothing(datamatrix, gridpoints, functionaldata):
     
     # Calculate Fourier smoothing and the number of basis functions
     dataMatrixFlat = flatter(datamatrix)
-    
-    for nBasis in range(300):
-        
+
+    for nBasis in range(10, 300, 1):
+
         basis = fda.representation.basis.Fourier(n_basis=nBasis) # fitting the data through Fourier
         smoothedData = functionaldata.to_basis(basis) # Change class to FDataBasis
-        
+
         evaluatingPoints = smoothedData.evaluate(np.array(gridpoints), derivative=0) # get the corresponding values in the resulting curve
-        evaluatingPoints = evaluatingPoints.tolist() # convert from array to list
+        evaluatingPoints = evaluatingPoints.tolist() # convert from array to list        
 
         flat2evaluatingPoints = flatter(evaluatingPoints)
         flatevaluatingPoints = flatter(flat2evaluatingPoints)
-    
-        rho, p = pearsonr(np.array(dataMatrixFlat), np.array(flatevaluatingPoints))
-        
-        if rho >= 0.95 or nBasis >= len(datamatrix[0]):
+
+        # rho, p = pearsonr(np.array(dataMatrixFlat), np.array(flatevaluatingPoints))
+        rho = pearson_correlation(dataMatrixFlat, flatevaluatingPoints)
+
+        if rho >= 0.95:
             break
         else:
             continue
 
+    functionaldata.plot()
+    smoothedData.plot()
     print('Number of basis functions: ', nBasis, 'and rho: ', rho)
     
     # Plotting of the smoothed functions
@@ -144,7 +150,7 @@ def msplot(varname, depthname, timestamps, depth, cutoff, smootheddata, smoothed
     funcMSPlot = fda.exploratory.visualization.MagnitudeShapePlot(fdata=smootheddatagrid, multivariate_depth=depth, cutoff_factor=cutoff, axes=ax1)
 
     outliersMSPlot = funcMSPlot.outliers
-    
+
     # Copy of the outliers for the control charts
     outliersCC = list(np.copy(outliersMSPlot).astype(int))
     
@@ -187,25 +193,67 @@ def msplot(varname, depthname, timestamps, depth, cutoff, smootheddata, smoothed
     # fig.show()
     
     # Double filter
-    if len(outliersMSPlot) != 0:
+    if all(outliersMSPlot == 0) == False:
         
         # Take the two dimensions separate
         mag = funcMSPlot.points[:, 0]
         shape = funcMSPlot.points[:, 1]
+
+        # Implement algos.
+        from sklearn.cluster import KMeans
+        from sklearn.ensemble import IsolationForest
+        from sklearn.covariance import MinCovDet
         
-        # Implementacion elipse
-        b = np.percentile(shape, 85)
-        a = np.percentile(mag, 80) - np.percentile(mag, 20)
-        elip = np.where(1 < (((pow((mag), 2) // pow(a, 2)) + (pow((shape), 2) // pow(b, 2)))))
-        # ellipse = Ellipse((0, 0), (a), (b), angle=0, alpha=0.3)
+        # Isolation Forest
+        modeliF = IsolationForest(n_estimators=100, contamination=0.10)
+        modeliF.fit(funcMSPlot.points)
+        pred = modeliF.predict(funcMSPlot.points)
+        probs = -1*modeliF.score_samples(funcMSPlot.points)
         
+        fig, axes = plt.subplots(1, figsize=(6, 4))
+        sp = axes.scatter(funcMSPlot.points[:, 0], funcMSPlot.points[:, 1], c=probs, cmap='RdBu')
+        fig.colorbar(sp, label='Simplified Anomaly Score')
+
+        indexiF = np.where(probs >= np.quantile(probs, 0.875))
+        valuesiF = funcMSPlot.points[indexiF]
+
+        fig, axes = plt.subplots(1, figsize=(6, 4))
+        axes.scatter(funcMSPlot.points[:, 0], funcMSPlot.points[:, 1])
+        axes.scatter(valuesiF[:, 0], valuesiF[:, 1], color='r')
+
+        # Minimum Covariance Determinant
+        modelMinCov = MinCovDet(random_state=0)
+        modelMinCov.fit(funcMSPlot.points)
+        mahaDistance = modelMinCov.mahalanobis(funcMSPlot.points)
+
+        fig, axes = plt.subplots(1, figsize=(6, 4))
+        sp = axes.scatter(funcMSPlot.points[:, 0], funcMSPlot.points[:, 1], c=mahaDistance, s=50, cmap='RdBu')
+        fig.colorbar(sp, label='Mahalanobis Distance')
+
+        indexMinCov = np.where(mahaDistance >= np.quantile(mahaDistance, 0.875))
+        valuesMinCov = funcMSPlot.points[indexMinCov]
+
+        fig, axes = plt.subplots(1, figsize=(6, 4))
+        axes.scatter(funcMSPlot.points[:, 0], funcMSPlot.points[:, 1])
+        axes.scatter(valuesMinCov[:, 0], valuesMinCov[:, 1], color='r')
+
+        indexiF = [i for i in indexiF[0]]
+        indexMinCov = [i for i in indexMinCov[0]]
+
+        # OR option
+        indexFinal = indexiF + indexMinCov
+        indexFinal = list(dict.fromkeys(indexFinal))
+
+        # AND option
+        # indexFinal = [i for i in indexiF if (i in indexiF) and (i in indexMinCov)]
+
         colors = np.copy(outliersMSPlot).astype(float)
         colors[:] = color
-        colors[elip] = outliercolor
+        colors[indexFinal] = outliercolor
 
         labels = np.copy(funcMSPlot.outliers.astype(int))
         labels[:] = 0
-        labels[elip] = 1
+        labels[indexFinal] = 1
         
         # Copy of the labels list for the control charts
         outliersCCBoosted = list(labels.copy())
@@ -256,7 +304,9 @@ def msplot(varname, depthname, timestamps, depth, cutoff, smootheddata, smoothed
         # fig.show()
     
     else:
+
         labels = []
+        outliersCCBoosted = [0] * len(outliersCC)
     
     # Get the dates of the outleirs
     outliers = [i for i,j in zip(timestamps, outliersMSPlot) if j == 1]
@@ -265,25 +315,33 @@ def msplot(varname, depthname, timestamps, depth, cutoff, smootheddata, smoothed
     # print('time stamps:', timeStamps)
     print('outliers:', np.round(len(outliers)/len(timestamps), 3), outliers)
     
-    outliersBoosted = [i for i,j in zip(timestamps, labels) if j == 1]
-    outliersMag = [i for i,j in zip(mag, labels) if j == 1]
-    outlierShape = [i for i,j in zip(shape, labels) if j == 1]
+    if all(outliersMSPlot == 0) == False:
 
-    dfOutliers = pd.DataFrame(list(zip(outliersMag, outlierShape)), index=outliersBoosted, columns=['magnitud', 'shape'])
+        outliersBoosted = [i for i,j in zip(timestamps, labels) if j == 1]
+        outliersMag = [i for i,j in zip(mag, labels) if j == 1]
+        outlierShape = [i for i,j in zip(shape, labels) if j == 1]
+
+        dfOutliers = pd.DataFrame(list(zip(outliersMag, outlierShape)), index=outliersBoosted, columns=['magnitud', 'shape'])
+        
+        print('outliers boosted:', np.round(len(outliersBoosted)/len(timestamps), 3), outliersBoosted)
+        print(dfOutliers)
+        print('Average magnitude: {} | Average shape: {}'.format(np.average(mag), np.average(shape)))
     
-    print('outliers boosted:', np.round(len(outliersBoosted)/len(timestamps), 3), outliersBoosted)
-    print(dfOutliers)
-    print('Average magnitude: {} | Average shape: {}'.format(np.average(mag), np.average(shape)))
+    else:
+
+        outliersBoosted = [0] * len(outliersMSPlot)
     
     return outliers, outliersBoosted, outliersCC, outliersCCBoosted
 
 def functionalAnalysis(varname, depthname, datamatrix, timestamps, timeframe, depth, cutoff):
     
     gridPoints, functionalData = dataGrid(datamatrix, timeframe)
-    
+
     smoothedData, smoothedDataGrid = smoothing(datamatrix, gridpoints=gridPoints, functionaldata=functionalData)
     
     outliers, outliersBoosted, outliersCC, outliersCCBoosted = msplot(varname, depthname, timestamps, depth, cutoff, smootheddata=smoothedData, smootheddatagrid=smoothedDataGrid)
+    
+    # outliers, outliersBoosted, outliersCC, outliersCCBoosted = '', '', '', ''
     
     plt.show()
     

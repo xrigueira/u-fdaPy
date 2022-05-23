@@ -1,3 +1,4 @@
+import math
 import skfda as fda
 
 from sklearn import preprocessing
@@ -5,12 +6,11 @@ from checkGaps import checkGaps
 from normalizer import normalizer
 from filterer import filterer
 from builder import builder
-# from uFda import functionalAnalysis
-from uFda_algos_test import functionalAnalysis
+from uFda import functionalAnalysis
 from controlCharts import controlCharts
 
 # Define the data we want to study
-varName = 'Conductividad'
+varName = 'Temperatura'
 timeFrame = 'b'
 
 # Set the preprocessing option

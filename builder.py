@@ -1,5 +1,6 @@
 
 import os
+from numpy import empty
 import pandas as pd
 
 """This function acts on the processed database. Its main function
@@ -241,13 +242,15 @@ def builder(File, timeFrame):
 
         # Get information on the time frame desired by the user
         # span = input('All weeks (a), 1st/2nd/3rd/4th week of each month (b), range of weeks in several or all years (c) or range of weeks (d): ')
-        span = 'a'
+        span = 'c'
         if span == 'b':
             weekNumber = list(map(int, input('Enter the week number: ')))
         
         elif span == 'c':
-            yearBeginOri, monthBegin, dayBegin = input('Enter the first year desired: '), input('Enter the first month desired: '), input('Enter the first day desired: ')
-            yearEndOri, monthEnd, dayEnd = input('Enter the last year desired: '), input('Enter the last month desired: '), input('Enter the last day desired: ')
+            yearBeginOri, monthBegin, dayBegin = '2019', '1', '7'
+            yearEndOri, monthEnd, dayEnd = '2021', '4', '1'
+            # yearBeginOri, monthBegin, dayBegin = input('Enter the first year desired: '), input('Enter the first month desired: '), input('Enter the first day desired: ')
+            # yearEndOri, monthEnd, dayEnd = input('Enter the last year desired: '), input('Enter the last month desired: '), input('Enter the last day desired: ')
         
         elif span == 'd':
             yearBegin, monthBegin, dayBegin = input('Enter the first year desired: '), input('Enter the first month desired: '), input('Enter the first day desired: ')
@@ -311,7 +314,8 @@ def builder(File, timeFrame):
         elif span == 'c': # range of weeks in several or all years
             
             numberYears = int(yearEndOri) - int(yearBeginOri)
-            
+            dfC = pd.DataFrame(columns=cols)
+
             for i in range(numberYears):
                 
                 # Start the variable
@@ -329,7 +333,7 @@ def builder(File, timeFrame):
                 # For the initial month -> check the starting dates in the following month and do the same until a existing startind date is found
                 # For the ending month -> the same but backwards in time.
                 for j in startDate:
-                    # It should jump ot the next month before the if statement in case the initial month does not exist
+                    # It should jump to the next month before the if statement in case that the initial month does not exist
                     if int(j[0:4]) == yearBegin and int(j[5:7]) == int(monthBegin):
                         daysAvailableS.append(int(j[-2:]))
                     
@@ -363,23 +367,30 @@ def builder(File, timeFrame):
                 # Crop the database with the obtained indexes
                 df = df.iloc[indexStart:indexEnd]
                 
-                if df.empty == True:
-                    pass
-                elif df.empty == False:
-                    variable = df['value'].values.tolist()
-                    startDateC = df['startDate'].values.tolist()
-                    endDateC = df['endDate'].values.tolist()
+                # Append the cropped section to the final df
+                dfC = dfC.append(df)
                 
-                    dataMatrix = [[] for i in range(len(variable))] # With toMatrix() this is not needed
-                    
-                    # group variable in nested lists of 672 items
-                    dataMatrix = toMatrix(variable, 672)
+                df = pd.read_csv(f'Database/{fileName}.csv', delimiter=';')
+            
+            print(dfC)
                 
-                startDateC = [i for i in startDateC if i != '-']
-                endDateC = [i for i in endDateC if i != '-']
+            if dfC.empty == True:
+                pass
+            elif df.empty == False:
+                variable = dfC['value'].values.tolist()
+                startDateC = dfC['startDate'].values.tolist()
+                endDateC = dfC['endDate'].values.tolist()
+            
+                dataMatrix = [[] for i in range(len(variable))] # With toMatrix() this is not needed
                 
-                for i in zip(startDateC, endDateC):
-                    timeStamps.append(str(i))
+                # group variable in nested lists of 672 items
+                dataMatrix = toMatrix(variable, 672)
+            
+            startDateC = [i for i in startDateC if i != '-']
+            endDateC = [i for i in endDateC if i != '-']
+            
+            for i in zip(startDateC, endDateC):
+                timeStamps.append(str(i))
         
         elif span == 'd': # range of weeks
             

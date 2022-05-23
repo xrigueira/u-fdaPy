@@ -1,2 +1,2 @@
-# fdaPy-multivariate
- Multivariate Functional Data Analysis
+# fdaPy
+ Univariate Functional Data Analysis

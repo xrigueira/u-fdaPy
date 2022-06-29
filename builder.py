@@ -289,7 +289,7 @@ def builder(File, timeFrame):
             
             for i in weekNumber:
                 
-                df = df.loc[df['week'] == i]
+                df = df.loc[df['weekOrder'] == i]
                 
                 if df.empty == True:
                     pass

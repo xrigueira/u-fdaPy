@@ -1,7 +1,6 @@
 import math
 import skfda as fda
 
-from sklearn import preprocessing
 from checkGaps import checkGaps
 from normalizer import normalizer
 from filterer import filterer

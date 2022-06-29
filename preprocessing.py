@@ -1,4 +1,5 @@
-"""Prepocessing algorithm"""
+"""THIS IS AN OLD FILE I NEEDED TO DEVELOP normalizer.py.
+It can be deleted when I am 100% sure I won't need it anymore."""
 
 import os
 import numpy as np

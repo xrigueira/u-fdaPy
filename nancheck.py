@@ -2,6 +2,11 @@ import os
 import pandas as pd
 import numpy as np
 
+"""This file is used to check if there are NaNs in the db.
+NOT A MAIN PART OF THE PROGRAM. Just a tool for whenever it
+is needed. I used to idendify some elusive NaNs when I had and
+error caused by them."""
+
 # Read the database
 File = 'Oxigeno disuelto'
 

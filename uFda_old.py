@@ -6,7 +6,9 @@ import plotly.graph_objects as go
 from matplotlib import pyplot as plt
 from scipy.stats.stats import pearsonr
 
-"""This file implemented the functional data analysis of the pre-processed data"""
+"""THIS IS AN OLD VERSION OF uFda.py. It does not contain the
+new algorithms: isolation forest and Minimum Covariance.
+It can be deleted once I am 100% I won't need it."""
 
 # TODO turn the Plotly implementation into a function
 

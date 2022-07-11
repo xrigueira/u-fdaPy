@@ -1,4 +1,4 @@
-import math
+
 import skfda as fda
 
 from checkGaps import checkGaps
@@ -8,15 +8,19 @@ from builder import builder
 from uFda import functionalAnalysis
 from controlCharts import controlCharts
 
+"""This file performs the univariate functional data analysis
+with directional outlyingness"""
+
 # Define the data we want to study
 varName = 'Temperatura'
-timeFrame = 'b'
+timeFrame = 'a'
 
 # Set the preprocessing option
 preprocessing = 'n'
 
 if __name__ == '__main__':
     
+    # Perform the univariate preprocessing
     if preprocessing == 'Y':
         
         # Fill in the gaps in the time series
@@ -27,7 +31,7 @@ if __name__ == '__main__':
         normalizer(File=f'{varName}_full.csv')
         print('[INFO] normalizer() DONE')
         
-        # Filter out those months with too many NaN and iterate on the rest
+        # Filter out those time units with too many NaN and iterate on the rest
         filterer(File=f'{varName}_nor.csv', timeframe=timeFrame)
         print('[INFO] filterer() DONE')
     

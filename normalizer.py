@@ -5,9 +5,9 @@ import pandas as pd
 from datetime import datetime
 
 """There are two functions in this file. findMonday() returns the index of the first Monday in the database,
-and normalizer() gets the filled database and adds the remaing days to set every month to 31 days.
+and normalizer() takes the filled database and adds the remaing days to set every month to 31 days.
 This is done due to requierments of the functional data. In order to covert discrete data into functional
-all time frames must have the same number of dicrete values."""
+all time frames must have the same number of discrete values."""
 
 # TODO habría que adaptar normalizer() para que ejecute los while loops. See lines 47, and 177
 

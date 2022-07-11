@@ -7,8 +7,9 @@ from matplotlib import pyplot as plt
 from scipy.stats.stats import pearsonr
 
 """THIS IS AN OLD VERSION OF uFda.py. It does not contain the
-new algorithms: isolation forest and Minimum Covariance.
-It can be deleted once I am 100% I won't need it."""
+new algorithms: Isolation Forest and Minimum Covariance.
+It can be used to obtain the results with the original
+outleir detector by Dai and Genton, 2019."""
 
 # TODO turn the Plotly implementation into a function
 

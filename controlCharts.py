@@ -52,6 +52,39 @@ def plotAxlines(array):
     
     return
 
+def labeler(varname):
+
+    if varname == 'Amonio':
+        label_title = r'$NH_4$ '
+        label_y_axis = r' (m*g/L)$'
+    elif varname == 'Conductividad':
+        label_title = r'Conductivity '
+        label_y_axis = r' (\mu*S/cm)$'
+    elif varname == 'Nitratos':
+        label_title = r'$NO_{3^-}$ '
+        label_y_axis = r' (m*g/L)$'
+    elif varname == 'Oxigeno disuelto':
+        label_title = r'$O_2$ '
+        label_y_axis = r' (m*g/L)$'
+    elif varname == 'pH':
+        label_title = r'pH '
+        label_y_axis = ''
+    elif varname == 'Temperatura':
+        label_title = r'Temperature '
+        label_y_axis = u' (\N{DEGREE SIGN}C)$'
+    elif varname == 'Caudal':
+        label_title = r'Flow '
+        label_y_axis = r' (m^3/s)$'
+    elif varname == "Turbidez":
+        label_title = r'Turbidity '
+        label_y_axis = r' (NRU)$'
+    elif varname == "Pluviometria":
+        label_title = r'Pluviometry '
+        label_y_axis = r' (mm)$'
+
+
+    return label_title, label_y_axis
+
 # Check which dates are considered outleirs according to the Nelson rules
 def validator(rule, dates, result):
     
@@ -65,7 +98,7 @@ def validator(rule, dates, result):
 
     return outliers
 
-def controlCharts(datamatrix, timestamps, timeframe, vargraph, outleirsresults):
+def controlCharts(varname, datamatrix, timestamps, timeframe, vargraph, outleirsresults):
     
     """varGraph (string) contains the type of control chart:
     mean: x bar chart
@@ -316,7 +349,9 @@ def controlCharts(datamatrix, timestamps, timeframe, vargraph, outleirsresults):
                     values[i+8] = 1
             
             data['rule_8'] = values
-    
+
+    label_title, label_y_axis = labeler(varname=varname)
+
     if vargraph == 'mean':
     
         result = {'all_values': x,
@@ -352,8 +387,8 @@ def controlCharts(datamatrix, timestamps, timeframe, vargraph, outleirsresults):
         
         fig, ax = plt.subplots(figsize=(12, 8))
     
-        ax.set_title(r'$O3$ '+r'$\bar{x}$'+f' chart')
-        ax.set(xlabel='Date', ylabel=r'$\bar{x}' + r' (\mu*g/m^3)$')
+        ax.set_title(label_title+r'$\bar{x}$'+f' chart')
+        ax.set(xlabel='Date', ylabel=r'$\bar{x}' + label_y_axis)
         
         plt.plot(timestamps, result['all_values'], color='red', markevery=format_arr(1, result=result), ls='', marker='s', mfc='none', mec='red', label='Rule1', markersize=mark*5.2)
         plt.plot(timestamps, result['all_values'], color='blue', markevery=format_arr(2, result=result), ls='', marker='o', mfc='none', mec='blue', label="Rule2", markersize=mark*4.7)

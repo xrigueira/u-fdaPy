@@ -21,7 +21,7 @@ files = [f for f in os.listdir("Database") if os.path.isfile(os.path.join("Datab
 varNames = [i[0:-4] for i in files] # extract the names of the variables
 
 # Define the time dram we want to use (a: months, b: weeks, c: days)
-timeFrame = 'a'
+timeFrame = 'b'
 
 
 if __name__ == '__main__':

@@ -1,4 +1,5 @@
 from cv2 import kmeans
+from matplotlib.lines import Line2D
 import numpy as np
 import skfda as fda
 import pandas as pd
@@ -15,6 +16,40 @@ from pearson import pearson_correlation
 
 def flatter(list):
     return [item for sublits in list for item in sublits]
+
+def labeler(varname):
+
+    if varname == 'Amonio':
+        label_title = r'$NH_4$'
+        label_y_axis = r'$NH_4$ ' + r'$(m*g/L)$'
+    elif varname == 'Conductividad':
+        label_title = r'Conductivity'
+        label_y_axis = r'Conductivity ' r'$(\mu*S/cm)$'
+    elif varname == 'Nitratos':
+        label_title = r'$NO_{3^-}$'
+        label_y_axis = r'$NO_{3^-}$ ' +r'$(m*g/L)$'
+    elif varname == 'Oxigeno disuelto':
+        label_title = r'$O_2$'
+        label_y_axis = r'$O_2$ ' r'$(m*g/L)$'
+    elif varname == 'pH':
+        label_title = r'pH'
+        label_y_axis = r'pH'
+    elif varname == 'Temperatura':
+        label_title = r'Temperature'
+        label_y_axis = r'Temperature ' +u'(\N{DEGREE SIGN}C)'
+    elif varname == 'Caudal':
+        label_title = r'Flow'
+        label_y_axis = r'Flow ' + r'($m^3/s$)'
+    elif varname == "Turbidez":
+        label_title = r'Turbidity'
+        label_y_axis = r'Turbidity ' + r'(NTU)'
+    elif varname == "Pluviometria":
+        label_title = r'Pluviometry'
+        label_y_axis = r'Pluviometry ' + r'(mm)'
+
+
+
+    return label_title, label_y_axis
 
 def dataGrid(datamatrix, timeframe):
     
@@ -144,8 +179,10 @@ def msplot(varname, depthname, timestamps, depth, cutoff, smootheddata, smoothed
     
     color, outliercolor = 0.3, 0.7
     depthName = depthname
+
+    label_title, label_y_axis = labeler(varname=varname)
     
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 4))
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
     
     funcMSPlot = fda.exploratory.visualization.MagnitudeShapePlot(fdata=smootheddatagrid, multivariate_depth=depth, cutoff_factor=cutoff, axes=ax1)
 
@@ -155,11 +192,12 @@ def msplot(varname, depthname, timestamps, depth, cutoff, smootheddata, smoothed
     outliersCC = list(np.copy(outliersMSPlot).astype(int))
     
     funcMSPlot.plot()
-    smootheddata.plot(group=funcMSPlot.outliers.astype(int), group_colors=funcMSPlot.colormap([color, outliercolor]), group_names=['nonoutliers', 'outliers'], axes=ax2)
+    smootheddata.plot(group=funcMSPlot.outliers.astype(int), group_colors=funcMSPlot.colormap([color, outliercolor]), group_names=['No outliers', 'Outliers'], axes=ax2)
     
-    ax2.set_title(f'Outliers {depthName} depth ' + r'$O3$')
-    ax2.set_xlabel('Days')
-    ax2.set_ylabel(r'$O3$' + r' $(\mu*g/m^3)$')
+    # ax2.set_title(f'Outliers {depthName} depth ' + label_title)
+    ax2.set_title(f'Functional weekly data ' + label_title)
+    ax2.set_xlabel('Time (15min intervals)')
+    ax2.set_ylabel(label_y_axis)
     # fig.savefig(f'outliers_MSPlot_{varName}.png')
     # plt.show()
     
@@ -210,32 +248,54 @@ def msplot(varname, depthname, timestamps, depth, cutoff, smootheddata, smoothed
         pred = modeliF.predict(funcMSPlot.points)
         probs = -1*modeliF.score_samples(funcMSPlot.points)
         
-        fig, axes = plt.subplots(1, figsize=(6, 4))
-        sp = axes.scatter(funcMSPlot.points[:, 0], funcMSPlot.points[:, 1], c=probs, cmap='RdBu')
+        fig, axes = plt.subplots(1, figsize=(7, 5))
+        sp = axes.scatter(funcMSPlot.points[:, 0], funcMSPlot.points[:, 1], c=probs, cmap='rainbow')
         fig.colorbar(sp, label='Simplified Anomaly Score')
+        axes.set_title('Isolation Forest Scores ' + label_title)
+        axes.set_facecolor("#F1F0E6")
+        axes.grid(color='w', linestyle='-', linewidth=1)
+        axes.set_axisbelow(True)
 
         indexiF = np.where(probs >= np.quantile(probs, 0.875))
         valuesiF = funcMSPlot.points[indexiF]
 
-        fig, axes = plt.subplots(1, figsize=(6, 4))
+        fig, axes = plt.subplots(1, figsize=(6, 5))
         axes.scatter(funcMSPlot.points[:, 0], funcMSPlot.points[:, 1])
         axes.scatter(valuesiF[:, 0], valuesiF[:, 1], color='r')
+        axes.set_title("Isolation Forest Binarized " + label_title)
+        axes.set_facecolor("#F1F0E6")
+        axes.grid(color='w', linestyle='-', linewidth=1)
+        axes.set_axisbelow(True)
+        legend_elements = [Line2D([0], [0], marker='o', color='w', label='No Outliers', markerfacecolor='b', markersize=13),
+                    Line2D([0], [0], marker='o', color='w', label='Outliers', markerfacecolor='r', markersize=13)]
+        axes.legend(handles=legend_elements, loc='best')
 
         # Minimum Covariance Determinant
         modelMinCov = MinCovDet(random_state=0)
         modelMinCov.fit(funcMSPlot.points)
         mahaDistance = modelMinCov.mahalanobis(funcMSPlot.points)
 
-        fig, axes = plt.subplots(1, figsize=(6, 4))
-        sp = axes.scatter(funcMSPlot.points[:, 0], funcMSPlot.points[:, 1], c=mahaDistance, s=50, cmap='RdBu')
+        fig, axes = plt.subplots(1, figsize=(7, 5))
+        sp = axes.scatter(funcMSPlot.points[:, 0], funcMSPlot.points[:, 1], c=mahaDistance, s=50, cmap='bwr')
         fig.colorbar(sp, label='Mahalanobis Distance')
+        axes.set_title("Minimum Covariance Determinant Score " + label_title)
+        axes.set_facecolor("#F1F0E6")
+        axes.grid(color='w', linestyle='-', linewidth=1)
+        axes.set_axisbelow(True)
 
         indexMinCov = np.where(mahaDistance >= np.quantile(mahaDistance, 0.875))
         valuesMinCov = funcMSPlot.points[indexMinCov]
 
-        fig, axes = plt.subplots(1, figsize=(6, 4))
+        fig, axes = plt.subplots(1, figsize=(6, 5))
         axes.scatter(funcMSPlot.points[:, 0], funcMSPlot.points[:, 1])
         axes.scatter(valuesMinCov[:, 0], valuesMinCov[:, 1], color='r')
+        axes.set_title("Minimum Covariance Determinant Binarized " + label_title)
+        axes.set_facecolor("#F1F0E6")
+        axes.grid(color='w', linestyle='-', linewidth=1)
+        axes.set_axisbelow(True)
+        legend_elements = [Line2D([0], [0], marker='o', color='w', label='No Outliers', markerfacecolor='b', markersize=13),
+                            Line2D([0], [0], marker='o', color='w', label='Outliers', markerfacecolor='r', markersize=13)]
+        axes.legend(handles=legend_elements, loc='best')
 
         indexiF = [i for i in indexiF[0]]
         indexMinCov = [i for i in indexMinCov[0]]
@@ -258,7 +318,7 @@ def msplot(varname, depthname, timestamps, depth, cutoff, smootheddata, smoothed
         # Copy of the labels list for the control charts
         outliersCCBoosted = list(labels.copy())
         
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 4))
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
         # ax1 = fig.add_subplot(1, 1, 1)
 
         ax1.scatter(funcMSPlot.points[:, 0], funcMSPlot.points[:, 1], c=funcMSPlot.colormap(colors))
@@ -267,12 +327,12 @@ def msplot(varname, depthname, timestamps, depth, cutoff, smootheddata, smoothed
         ax1.set_ylabel("Shape outlyingness")
         # ax1.add_artist(ellipse)
         
-        ax2.set_title(f'Outliers {depthName} depth ' + r'$NH_4$')
-        ax2.set_xlabel('data points')
-        ax2.set_ylabel(r'$NH_4$' + r' $(mg/l)$')
+        ax2.set_title(f'Functional weekly data ' + label_title)
+        ax2.set_xlabel('Time (15min intervals)')
+        ax2.set_ylabel(label_y_axis)
         
         colormap = plt.cm.get_cmap('seismic')
-        smootheddata.plot(group=labels, group_colors=colormap([color, outliercolor]), group_names=['nonoutliers', 'outliers'], axes=ax2)
+        smootheddata.plot(group=labels, group_colors=colormap([color, outliercolor]), group_names=['No outliers', 'Outliers'], axes=ax2)
         
         # Plotly implementation to display the results on the browser
         dataPly = []

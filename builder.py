@@ -242,7 +242,7 @@ def builder(File, timeFrame):
 
         # Get information on the time frame desired by the user
         # span = input('All weeks (a), 1st/2nd/3rd/4th week of each month (b), range of weeks in several or all years (c) or range of weeks (d): ')
-        span = 'c'
+        span = 'a'
         if span == 'b':
             weekNumber = list(map(int, input('Enter the week number: ')))
         

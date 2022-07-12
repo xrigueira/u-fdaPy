@@ -12,8 +12,8 @@ from controlCharts import controlCharts
 with directional outlyingness"""
 
 # Define the data we want to study
-varName = 'Temperatura'
-timeFrame = 'a'
+varName = 'Pluviometria'
+timeFrame = 'b'
 
 # Set the preprocessing option
 preprocessing = 'n'
@@ -52,5 +52,5 @@ if __name__ == '__main__':
         outliers, outliersBoosted, outliersCC, outliersCCBoosted = functionalAnalysis(varname=varName, depthname='modified band', datamatrix=dataMatrix, timestamps=timeStamps, timeframe=timeFrame, depth=modifiedbandDepth, cutoff=cutoffIntMS)
         print('[INFO] functionalAnalysis() DONE')
 
-        controlCharts(datamatrix=dataMatrix, timestamps=timeStamps, timeframe=timeFrame, vargraph='mean', outleirsresults=outliersCCBoosted)
+        controlCharts(varname=varName, datamatrix=dataMatrix, timestamps=timeStamps, timeframe=timeFrame, vargraph='mean', outleirsresults=outliersCCBoosted)
         print('[INFO] controlCharts() DONE')
